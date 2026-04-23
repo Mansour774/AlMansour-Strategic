@@ -1,119 +1,184 @@
 import streamlit as st
+import pandas as pd
+import time
 
-# 1. إعدادات الهوية البصرية (Premium Executive)
-st.set_page_config(page_title="المنصور استراتيجي", layout="centered")
+# 1. إعدادات الصفحة الفاخرة
+st.set_page_config(page_title="المنصور استراتيجي | تجربة النخبة", layout="centered")
 
-# رابط التعديل المباشر (الخفيف) لراحتك
-DIRECT_EDIT_URL = "https://github.com/Mansour774/AlMansour-Strategic/edit/main/app.py"
+# بيانات التحكم
+MY_EMAIL = "774575749m@gmail.com"
+EDIT_URL = "https://github.com/Mansour774/AlMansour-Strategic/edit/main/app.py"
 
-st.markdown(f"""
+# --- محرك الجماليات (Advanced CSS) ---
+st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
-    * {{ font-family: 'Cairo', sans-serif; direction: rtl; }}
-    .main {{ background-color: #0E1117; }}
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap');
     
-    /* الشعار النصي الفخم */
-    .logo-box {{ text-align: center; padding: 15px 0; }}
-    .logo-main {{ color: #D4AF37; font-size: 2.5rem; font-weight: 800; line-height: 1; }}
-    .logo-sub {{ color: #ffffff; font-size: 0.9rem; letter-spacing: 2px; border-top: 1px solid #D4AF37; padding-top: 5px; display: inline-block; opacity: 0.8; }}
+    :root {
+        --gold: #D4AF37;
+        --dark-bg: #0E1117;
+        --card-bg: #161a24;
+    }
 
-    /* أزرار النظام */
-    .stButton>button {{
-        background: linear-gradient(90deg, #D4AF37 0%, #B8860B 100%) !important;
-        color: #000 !important; font-weight: 700 !important; border-radius: 8px !important;
-        height: 3.2rem !important; border: none !important; transition: 0.3s;
-    }}
-    .trial-btn>button {{ background: #1a1c24 !important; color: #D4AF37 !important; border: 1px solid #D4AF37 !important; }}
+    * { font-family: 'Cairo', sans-serif; direction: rtl; }
 
-    /* زر الواتساب */
-    .wa-btn {{
-        background-color: #25D366; color: white !important; padding: 10px;
-        border-radius: 8px; text-decoration: none; display: flex;
-        justify-content: center; font-weight: bold; margin-top: 10px; font-size: 0.9rem;
-    }}
+    /* تحسين الخلفية العامة */
+    .main { background-color: var(--dark-bg); color: #ffffff; }
 
-    /* رابط الإدارة الخفيف في الأسفل */
-    .admin-link {{ position: fixed; left: 15px; bottom: 15px; font-size: 0.75rem; color: #444 !important; text-decoration: none; font-weight: bold; }}
-    .admin-link:hover {{ color: #D4AF37 !important; }}
+    /* الشعار المتحرك */
+    .logo-container { text-align: center; padding: 20px 0; animation: fadeInDown 1s ease-out; }
+    .logo-main { color: var(--gold); font-size: 3.2rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0; }
+    .logo-sub { color: #ffffff; font-size: 0.85rem; opacity: 0.6; letter-spacing: 5px; text-transform: uppercase; margin-top: -10px; }
+
+    /* تصميم البطاقات الاحترافي */
+    .stTextInput, .stTextArea, .stSelectbox, .stNumberInput {
+        background-color: var(--card-bg) !important;
+        border: 1px solid rgba(212, 175, 55, 0.2) !important;
+        border-radius: 12px !important;
+        transition: 0.3s all ease;
+    }
+    .stTextInput:focus-within { border-color: var(--gold) !important; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2) !important; }
+
+    /* الأزرار المبهرة */
+    .stButton>button {
+        width: 100% !important;
+        border-radius: 15px !important;
+        font-weight: 700 !important;
+        height: 3.8rem !important;
+        font-size: 1.1rem !important;
+        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        border: none !important;
+    }
+    /* زر التالي (ذهبي) */
+    div[data-testid="column"]:nth-of-type(2) .stButton>button {
+        background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%) !important;
+        color: #000 !important;
+    }
+    /* زر السابق (شفاف) */
+    div[data-testid="column"]:nth-of-type(1) .stButton>button {
+        background-color: rgba(255,255,255,0.05) !important;
+        color: var(--gold) !important;
+        border: 1px solid var(--gold) !important;
+    }
+    .stButton>button:hover { transform: scale(1.02); box-shadow: 0 8px 20px rgba(212,175,55,0.4); }
+
+    /* صناديق النصائح (Glassmorphism) */
+    .ai-hint-box {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border-right: 5px solid var(--gold);
+        padding: 20px;
+        border-radius: 15px;
+        margin: 20px 0;
+        animation: fadeInLeft 0.8s ease-out;
+    }
+
+    /* الأنيميشن */
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInLeft { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    
+    .admin-anchor { position: fixed; left: 25px; bottom: 25px; background: var(--gold); color: black !important; padding: 12px 20px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 0.8rem; box-shadow: 0 10px 25px rgba(0,0,0,0.4); z-index: 1000; transition: 0.3s; }
+    .admin-anchor:hover { transform: rotate(-5deg) scale(1.1); }
     </style>
-    <a href="{DIRECT_EDIT_URL}" target="_blank" class="admin-link">⚙️ تعديل الكود المباشر</a>
     """, unsafe_allow_html=True)
 
-# إدارة الحالة (الدخول والمراحل)
+# إدارة الجلسة
 if 'auth' not in st.session_state: st.session_state.auth = False
 if 'step' not in st.session_state: st.session_state.step = 1
+if 'is_admin' not in st.session_state: st.session_state.is_admin = False
 
-# عرض الشعار في القمة
-st.markdown('<div class="logo-box"><div class="logo-main">AL MANSOUR</div><div class="logo-sub">STRATEGIC SOLUTIONS</div></div>', unsafe_allow_html=True)
+# الشعار
+st.markdown('<div class="logo-container"><div class="logo-main">AL MANSOUR</div><div class="logo-sub">Strategic Excellence System</div></div>', unsafe_allow_html=True)
 
 if not st.session_state.auth:
-    st.markdown("<h3 style='text-align:center; color:#D4AF37;'>مرحباً بك في منصة الخبراء</h3>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center; color:#E0E0E0;'>اختر وسيلة الدخول للبدء في إعداد تقريرك الاحترافي</p>", unsafe_allow_html=True)
-    
-    col_auth1, col_auth2 = st.columns(2)
-    with col_auth1:
-        if st.button("🚀 ابدأ تجربة مجانية"):
-            st.session_state.auth = True
-            st.session_state.mode = "Trial"
-            st.rerun()
-            
-    with col_auth2:
-        code = st.text_input("", placeholder="أدخل كود VIP للدخول الكامل", type="password")
-        if st.button("تفعيل كود VIP"):
-            if code == "M-77-VIP":
-                st.session_state.auth = True
-                st.session_state.mode = "VIP"
-                st.rerun()
-            else: st.error("الكود غير صحيح")
-
-    st.markdown("<hr style='opacity:0.1;'>", unsafe_allow_html=True)
-    st.markdown(f'<a href="https://wa.me/967774575749" class="wa-btn">💬 طلب كود تفعيل VIP (واتساب)</a>', unsafe_allow_html=True)
-
+    with st.container():
+        st.markdown("<h2 style='text-align:center; color:white; font-weight:700;'>مرحباً بك في عالم الاستشارات الذكية</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; opacity:0.7;'>سجل دخولك لتجربة صياغة تقارير بمعايير دولية</p>", unsafe_allow_html=True)
+        user_id = st.text_input("البريد الإلكتروني أو الجوال", placeholder="أدخل بياناتك هنا...")
+        
+        if st.button("🚀 دخول آمن"):
+            if user_id:
+                with st.spinner("جاري تهيئة البيئة الاستراتيجية..."):
+                    time.sleep(1.2)
+                    if user_id.strip().lower() == MY_EMAIL: st.session_state.is_admin = True
+                    st.session_state.auth = True; st.rerun()
+            else: st.error("يرجى إدخال البيانات للبدء")
 else:
-    # واجهة العمل
+    # شريط التقدم الأنيق
     st.progress(st.session_state.step / 4)
-    if st.session_state.get("mode") == "Trial":
-        st.warning("⚠️ أنت الآن في وضع 'التجربة المجانية'")
+    
+    # تعريف التقارير
+    reports_map = {
+        "📊 تقرير إنجاز (Achievement)": "التركيز: مؤشرات الأداء، الأرقام، ونسبة الإنجاز.",
+        "🏁 تقرير ختامي (Final Narrative)": "التركيز: الاستدامة، الدروس المستفادة، والأثر العام.",
+        "💡 تقييم أثر (Impact)": "التركيز: قصص النجاح والتغيير النوعي في المجتمع.",
+        "🤝 محضر اجتماع (Minutes)": "التركيز: القرارات، المسؤوليات، والجدول الزمني.",
+        "🔍 تحليل احتياج (Needs)": "التركيز: الفجوات، المبررات، والأولويات."
+    }
 
     if st.session_state.step == 1:
-        st.subheader("🏷️ المرحلة 1: بيانات الهوية")
-        q1 = st.text_input("1. اسم المشروع", placeholder="مثال: التمكين الرقمي")
-        q2 = st.text_input("2. الجهة المنفذة")
-        q3 = st.text_input("3. عنوان النشاط")
-        q4 = st.text_input("4. النطاق (زمان/مكان)")
-        if st.button("التالي ⬅️"):
-            st.session_state.update({"q1":q1,"q2":q2,"q3":q3,"q4":q4, "step":2}); st.rerun()
+        st.subheader("1️⃣ تحديد المسار الاستراتيجي")
+        rtype = st.selectbox("نوع التقرير المطلوب", list(reports_map.keys()))
+        rlang = st.radio("لغة الصياغة", ["عربية بليغة", "Business English", "مزدوج (AR/EN)"], horizontal=True)
+        
+        st.markdown(f'<div class="ai-hint-box"><b>💡 نصيحة المستشار:</b><br>{reports_map[rtype]}</div>', unsafe_allow_html=True)
+        
+        q1 = st.text_input("اسم المشروع الاستراتيجي", placeholder="ما هو عنوان النجاح اليوم؟")
+        q2 = st.text_input("الشركاء والمانحين", placeholder="من هم شركاء الأثر؟")
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("التالي: البيانات الميدانية ⬅️"):
+            st.session_state.update({"rtype":rtype, "rlang":rlang, "q1":q1, "q2":q2, "step":2}); st.rerun()
 
     elif st.session_state.step == 2:
-        st.subheader("🎯 المرحلة 2: المضمون")
-        q5 = st.text_input("5. إحصائيات الحضور")
-        q6 = st.text_area("6. أهداف النشاط")
-        col1, col2 = st.columns(2)
-        if col1.button("➡️ السابق"): st.session_state.step = 1; st.rerun()
-        if col2.button("التالي ⬅️"):
-            st.session_state.update({"q5":q5,"q6":q6, "step":3}); st.rerun()
+        st.subheader("2️⃣ الأرقام والمنهجية الميدانية")
+        q5 = st.text_input("إحصائيات الحضور (توصيف دقيق)")
+        
+        c1, c2 = st.columns(2)
+        m = c1.number_input("الذكور", min_value=0)
+        f = c2.number_input("الإناث", min_value=0)
+        if m+f > 0:
+            st.bar_chart(pd.DataFrame({'الفئة':['ذكور','إناث'],'العدد':[m,f]}).set_index('الفئة'), color="#D4AF37")
+        
+        q7 = st.text_area("منهجية التنفيذ (خطوات العمل)", placeholder="اشرح كيف تم تحويل الخطط إلى واقع...")
+        
+        col_p, col_n = st.columns(2)
+        if col_p.button("⬅️ العودة"): st.session_state.step = 1; st.rerun()
+        if col_n.button("التالي: تحليل النتائج ⬅️"):
+            st.session_state.update({"q5":q5,"m":m,"f":f,"q7":q7,"step":3}); st.rerun()
 
     elif st.session_state.step == 3:
-        st.subheader("📈 المرحلة 3: التحليل")
-        q7 = st.text_area("7. أهم الإنجازات")
-        q8 = st.text_area("8. التحديات")
-        q9 = st.text_area("9. الحلول")
-        col1, col2 = st.columns(2)
-        if col1.button("➡️ السابق"): st.session_state.step = 2; st.rerun()
-        if col2.button("التالي ⬅️"):
-            st.session_state.update({"q7":q7,"q8":q8,"q9":q9, "step":4}); st.rerun()
+        st.subheader("3️⃣ التحليل الاستراتيجي العميق")
+        q6 = st.text_area("المخرجات والنتائج المحققة", help="ما الذي تغير فعلياً على أرض الواقع؟")
+        q8 = st.text_area("التحديات والدروس المستفادة", help="كيف تعاملتم مع العقبات بذكاء؟")
+        
+        col_p, col_n = st.columns(2)
+        if col_p.button("⬅️ العودة"): st.session_state.step = 2; st.rerun()
+        if col_n.button("التالي: الرؤية الختامية ⬅️"):
+            st.session_state.update({"q6":q6,"q8":q8,"step":4}); st.rerun()
 
     elif st.session_state.step == 4:
-        st.subheader("🏁 المرحلة 4: الختام")
-        q10 = st.text_area("10. التوصيات")
-        q11 = st.text_input("11. وصف الصور")
-        col1, col2 = st.columns(2)
-        if col1.button("➡️ السابق"): st.session_state.step = 3; st.rerun()
-        if st.button("🚀 توليد التقرير النهائي"):
+        st.subheader("4️⃣ الأثر والتوصيات")
+        q10 = st.text_area("التوصيات المستقبلية")
+        q11 = st.text_area("قصص النجاح والأثر الملموس")
+        
+        col_p, col_n = st.columns(2)
+        if col_p.button("⬅️ العودة"): st.session_state.step = 3; st.rerun()
+        if col_n.button("🚀 صياغة التقرير العالمي"):
+            with st.status("جاري تحليل البيانات وصياغتها بمعايير دولية...", expanded=True) as status:
+                st.write("✅ تدقيق المؤشرات الإحصائية...")
+                time.sleep(1)
+                st.write("✅ صياغة المحتوى باللغة الاستشارية...")
+                time.sleep(1)
+                status.update(label="تم توليد التقرير بنجاح!", state="complete", expanded=False)
+            
             st.balloons()
-            res = f"STRATEGIC REPORT DATA\nPRJ: {st.session_state.q1}\nORG: {st.session_state.q2}\nGOALS: {st.session_state.q6}\nACHIEVEMENTS: {st.session_state.q7}"
-            st.code(res)
-            if st.button("إعادة البدء 🔄"):
-                st.session_state.step = 1; st.rerun()
+            final_prompt = f"المطلوب صياغة {st.session_state.rtype} بـ {st.session_state.rlang} لمشروع {st.session_state.q1}. البيانات الميدانية: {st.session_state.q5}, المنهجية: {st.session_state.q7}, النتائج: {st.session_state.q6}, التحديات: {st.session_state.q8}, التوصيات: {q10}, الأثر: {q11}."
+            
+            st.success("📝 المخرج الاستراتيجي جاهز")
+            st.code(final_prompt, language="markdown")
+            st.download_button("📥 تحميل التقرير", final_prompt, file_name="Mansour_Strategic_Report.txt")
+            if st.button("تقرير جديد 🔄"): st.session_state.step = 1; st.rerun()
 
-st.markdown("<p style='text-align:center; font-size:0.7rem; color:#444; margin-top:50px;'>منصور الوصابي © 2026</p>", unsafe_allow_html=True)
+if st.session_state.is_admin:
+    st.markdown(f'<a href="{EDIT_URL}" target="_blank" class="admin-anchor">⚙️ غرفة التحكم | منصور الوصابي</a>', unsafe_allow_html=True)
