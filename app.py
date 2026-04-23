@@ -132,4 +132,73 @@ def ai_buttons(label, text_key):
 
 # ربط الحقول بالـ session
 st.session_state["goal"] = goal
-st.session_state["challenge
+st.session_state["challenge"] = challenge
+st.session_state["results"] = results
+
+st.markdown("### 🧠 تحسين الأهداف")
+ai_buttons("الأهداف", "goal")
+
+st.markdown("### 🧠 تحسين التحديات")
+ai_buttons("التحديات", "challenge")
+
+st.markdown("### 🧠 تحسين النتائج")
+ai_buttons("النتائج", "results")
+
+# ================== توليد التقرير ==================
+if st.button("🚀 توليد التقرير"):
+    content = f"""
+    نوع التقرير: {r_type}
+
+    اسم المشروع:
+    {project}
+
+    الأهداف:
+    {st.session_state.get("goal","")}
+
+    التحديات:
+    {st.session_state.get("challenge","")}
+
+    النتائج:
+    {st.session_state.get("results","")}
+    """
+
+    c.execute(
+        "INSERT INTO reports (user, title, content, created_at) VALUES (?, ?, ?, ?)",
+        (st.session_state.user, project, content, str(datetime.now()))
+    )
+    conn.commit()
+
+    st.success("✅ تم إنشاء التقرير")
+
+    st.text_area("📄 التقرير النهائي", content, height=300)
+
+    pdf = create_pdf(project, content)
+    with open(pdf, "rb") as f:
+        st.download_button("📥 تحميل PDF", f, file_name="report.pdf")
+
+    st.session_state.usage += 1
+
+# ================== الأرشيف ==================
+st.markdown("## 📁 الأرشيف")
+
+rows = c.execute(
+    "SELECT title, created_at FROM reports WHERE user=? ORDER BY id DESC",
+    (st.session_state.user,)
+).fetchall()
+
+for r in rows:
+    st.write(f"📄 {r[0]} | {r[1]}")
+
+# ================== Admin ==================
+if st.session_state.is_admin:
+    st.markdown("## ⚙️ لوحة المدير")
+    all_reports = c.execute("SELECT user, title FROM reports").fetchall()
+    st.write(all_reports)
+
+# ================== واتساب ==================
+st.markdown(f"[📞 تواصل واتساب]({WHATSAPP_LINK})")
+
+# ================== تسجيل خروج ==================
+if st.button("تسجيل الخروج"):
+    st.session_state.clear()
+    st.rerun()
