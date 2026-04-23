@@ -1,184 +1,158 @@
 import streamlit as st
 import pandas as pd
 import time
+import random
 
-# 1. إعدادات الصفحة الفاخرة
-st.set_page_config(page_title="المنصور استراتيجي | تجربة النخبة", layout="centered")
+# 1. إعدادات الهوية البصرية الفائقة
+st.set_page_config(page_title="المنصور استراتيجي | PRO V18", layout="centered")
 
-# بيانات التحكم
-MY_EMAIL = "774575749m@gmail.com"
-EDIT_URL = "https://github.com/Mansour774/AlMansour-Strategic/edit/main/app.py"
+# بيانات المدير (المتحكم الوحيد)
+ADMIN_EMAIL = "774575749m@gmail.com"
+GITHUB_EDIT_LINK = "https://github.com/Mansour774/AlMansour-Strategic/edit/main/app.py"
 
-# --- محرك الجماليات (Advanced CSS) ---
+# --- محرك التصميم المتقدم (تحسين التباين والوضوح) ---
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap');
-    
-    :root {
-        --gold: #D4AF37;
-        --dark-bg: #0E1117;
-        --card-bg: #161a24;
-    }
-
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
     * { font-family: 'Cairo', sans-serif; direction: rtl; }
+    .main { background-color: #0E1117; color: #FFFFFF; }
+    
+    /* تحسين وضوح الخطوط */
+    h1, h2, h3 { color: #D4AF37 !important; font-weight: 800 !important; }
+    label { color: #FFFFFF !important; font-weight: 700 !important; font-size: 1.15rem !important; background: rgba(212,175,55,0.05); padding: 5px 10px; border-radius: 5px; display: block; margin-bottom: 12px !important; }
+    .stMarkdown p { color: #F0F0F0 !important; font-size: 1rem; }
 
-    /* تحسين الخلفية العامة */
-    .main { background-color: var(--dark-bg); color: #ffffff; }
-
-    /* الشعار المتحرك */
-    .logo-container { text-align: center; padding: 20px 0; animation: fadeInDown 1s ease-out; }
-    .logo-main { color: var(--gold); font-size: 3.2rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0; }
-    .logo-sub { color: #ffffff; font-size: 0.85rem; opacity: 0.6; letter-spacing: 5px; text-transform: uppercase; margin-top: -10px; }
-
-    /* تصميم البطاقات الاحترافي */
-    .stTextInput, .stTextArea, .stSelectbox, .stNumberInput {
-        background-color: var(--card-bg) !important;
-        border: 1px solid rgba(212, 175, 55, 0.2) !important;
+    /* حقول الإدخال الاحترافية */
+    .stTextInput input, .stTextArea textarea {
+        background-color: #1A1E29 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #3d4455 !important;
         border-radius: 12px !important;
+        font-size: 1rem !important;
+    }
+    .stTextInput input:focus { border-color: #D4AF37 !important; }
+
+    /* الأزرار الملكية */
+    .stButton>button {
+        width: 100% !important; border-radius: 12px !important;
+        height: 3.8rem !important; font-weight: 800 !important; font-size: 1.2rem !important;
         transition: 0.3s all ease;
     }
-    .stTextInput:focus-within { border-color: var(--gold) !important; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2) !important; }
-
-    /* الأزرار المبهرة */
-    .stButton>button {
-        width: 100% !important;
-        border-radius: 15px !important;
-        font-weight: 700 !important;
-        height: 3.8rem !important;
-        font-size: 1.1rem !important;
-        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-        border: none !important;
-    }
-    /* زر التالي (ذهبي) */
+    /* زر التأكيد (ذهبي) */
     div[data-testid="column"]:nth-of-type(2) .stButton>button {
-        background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%) !important;
-        color: #000 !important;
+        background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%) !important; color: #000 !important; border: none !important;
     }
-    /* زر السابق (شفاف) */
-    div[data-testid="column"]:nth-of-type(1) .stButton>button {
-        background-color: rgba(255,255,255,0.05) !important;
-        color: var(--gold) !important;
-        border: 1px solid var(--gold) !important;
-    }
-    .stButton>button:hover { transform: scale(1.02); box-shadow: 0 8px 20px rgba(212,175,55,0.4); }
-
-    /* صناديق النصائح (Glassmorphism) */
-    .ai-hint-box {
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(10px);
-        border-right: 5px solid var(--gold);
-        padding: 20px;
-        border-radius: 15px;
-        margin: 20px 0;
-        animation: fadeInLeft 0.8s ease-out;
-    }
-
-    /* الأنيميشن */
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeInLeft { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
     
-    .admin-anchor { position: fixed; left: 25px; bottom: 25px; background: var(--gold); color: black !important; padding: 12px 20px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 0.8rem; box-shadow: 0 10px 25px rgba(0,0,0,0.4); z-index: 1000; transition: 0.3s; }
-    .admin-anchor:hover { transform: rotate(-5deg) scale(1.1); }
+    /* شارة الباقة */
+    .package-badge { padding: 8px 20px; border-radius: 50px; font-weight: bold; border: 1px solid #D4AF37; color: #D4AF37; }
+    .admin-only-btn { background: #D4AF37 !important; color: black !important; font-weight: bold; text-decoration: none; padding: 10px 20px; border-radius: 10px; display: inline-block; margin-top: 20px; }
     </style>
     """, unsafe_allow_html=True)
 
-# إدارة الجلسة
-if 'auth' not in st.session_state: st.session_state.auth = False
+# --- إدارة الحالة الأمنية ---
+if 'is_logged_in' not in st.session_state: st.session_state.is_logged_in = False
+if 'waiting_otp' not in st.session_state: st.session_state.waiting_otp = False
+if 'user_role' not in st.session_state: st.session_state.user_role = "User"
 if 'step' not in st.session_state: st.session_state.step = 1
-if 'is_admin' not in st.session_state: st.session_state.is_admin = False
 
-# الشعار
-st.markdown('<div class="logo-container"><div class="logo-main">AL MANSOUR</div><div class="logo-sub">Strategic Excellence System</div></div>', unsafe_allow_html=True)
+# الأكواد المعتمدة (VIP)
+VIP_CODES = {"MANSOUR-GOLD": "الباقة الذهبية (مفتوح)", "YEMEN-2026": "الباقة الفضية (10 تقارير)"}
 
-if not st.session_state.auth:
-    with st.container():
-        st.markdown("<h2 style='text-align:center; color:white; font-weight:700;'>مرحباً بك في عالم الاستشارات الذكية</h2>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center; opacity:0.7;'>سجل دخولك لتجربة صياغة تقارير بمعايير دولية</p>", unsafe_allow_html=True)
-        user_id = st.text_input("البريد الإلكتروني أو الجوال", placeholder="أدخل بياناتك هنا...")
-        
-        if st.button("🚀 دخول آمن"):
-            if user_id:
-                with st.spinner("جاري تهيئة البيئة الاستراتيجية..."):
-                    time.sleep(1.2)
-                    if user_id.strip().lower() == MY_EMAIL: st.session_state.is_admin = True
-                    st.session_state.auth = True; st.rerun()
-            else: st.error("يرجى إدخال البيانات للبدء")
-else:
-    # شريط التقدم الأنيق
-    st.progress(st.session_state.step / 4)
+# --- شاشة الدخول والتحقق ---
+if not st.session_state.is_logged_in:
+    st.markdown("<h1 style='text-align:center;'>بوابة المنصور الاستراتيجية</h1>", unsafe_allow_html=True)
     
-    # تعريف التقارير
-    reports_map = {
-        "📊 تقرير إنجاز (Achievement)": "التركيز: مؤشرات الأداء، الأرقام، ونسبة الإنجاز.",
-        "🏁 تقرير ختامي (Final Narrative)": "التركيز: الاستدامة، الدروس المستفادة، والأثر العام.",
-        "💡 تقييم أثر (Impact)": "التركيز: قصص النجاح والتغيير النوعي في المجتمع.",
-        "🤝 محضر اجتماع (Minutes)": "التركيز: القرارات، المسؤوليات، والجدول الزمني.",
-        "🔍 تحليل احتياج (Needs)": "التركيز: الفجوات، المبررات، والأولويات."
-    }
+    if not st.session_state.waiting_otp:
+        st.subheader("🔑 تسجيل الدخول")
+        email_input = st.text_input("أدخل بريدك الإلكتروني الرسمي", placeholder="example@domain.com")
+        if st.button("إرسال رمز التفعيل 📧"):
+            if "@" in email_input and "." in email_input:
+                # محاكاة إرسال OTP
+                st.session_state.temp_email = email_input
+                st.session_state.waiting_otp = True
+                st.session_state.generated_otp = str(random.randint(1000, 9999))
+                # في النسخة الحقيقية سيرسل إيميل، هنا سنظهره للمدير فقط للتجربة
+                if email_input == ADMIN_EMAIL: 
+                    st.info(f"كود التحقق الخاص بك هو: {st.session_state.generated_otp}")
+                st.rerun()
+            else: st.error("يرجى إدخال إيميل صحيح")
+    else:
+        st.subheader("✅ تم إرسال الرمز")
+        otp_val = st.text_input(f"أدخل الرمز المرسل إلى {st.session_state.temp_email}", placeholder="4 أرقام")
+        if st.button("تأكيد الرمز والدخول"):
+            if otp_val == st.session_state.generated_otp:
+                st.session_state.is_logged_in = True
+                if st.session_state.temp_email == ADMIN_EMAIL: st.session_state.user_role = "Admin"
+                st.success("تم التحقق بنجاح!")
+                time.sleep(1); st.rerun()
+            else: st.error("الرمز غير صحيح")
+        if st.button("تغيير الإيميل"): st.session_state.waiting_otp = False; st.rerun()
 
+# --- واجهة العمل الاستراتيجية ---
+else:
+    # هيدر المستخدم
+    st.markdown(f"<div style='text-align:left;'><span class='package-badge'>الدور: {st.session_state.user_role}</span></div>", unsafe_allow_html=True)
+    st.progress(st.session_state.step / 4)
+
+    # المرحلة 1
     if st.session_state.step == 1:
-        st.subheader("1️⃣ تحديد المسار الاستراتيجي")
-        rtype = st.selectbox("نوع التقرير المطلوب", list(reports_map.keys()))
-        rlang = st.radio("لغة الصياغة", ["عربية بليغة", "Business English", "مزدوج (AR/EN)"], horizontal=True)
+        st.subheader("1️⃣ معلومات النشاط والسياق")
+        q1 = st.text_input("اسم المشروع / النشاط الاستراتيجي", placeholder="مثال: ورشة عمل التخطيط التشغيلي للمنظمات")
+        q2 = st.text_input("الجهة المنفذة والشركاء", placeholder="مثال: مركز المنصور بالتعاون مع وزارة التخطيط")
+        q3 = st.text_input("الموقع والزمان", placeholder="مثال: عدن، قاعة الفخامة - مايو 2026")
         
-        st.markdown(f'<div class="ai-hint-box"><b>💡 نصيحة المستشار:</b><br>{reports_map[rtype]}</div>', unsafe_allow_html=True)
-        
-        q1 = st.text_input("اسم المشروع الاستراتيجي", placeholder="ما هو عنوان النجاح اليوم؟")
-        q2 = st.text_input("الشركاء والمانحين", placeholder="من هم شركاء الأثر؟")
-        
-        st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("التالي: البيانات الميدانية ⬅️"):
-            st.session_state.update({"rtype":rtype, "rlang":rlang, "q1":q1, "q2":q2, "step":2}); st.rerun()
+        if st.button("التالي ⬅️"):
+            st.session_state.update({"q1":q1,"q2":q2,"q3":q3, "step":2}); st.rerun()
 
+    # المرحلة 2
     elif st.session_state.step == 2:
-        st.subheader("2️⃣ الأرقام والمنهجية الميدانية")
-        q5 = st.text_input("إحصائيات الحضور (توصيف دقيق)")
+        st.subheader("2️⃣ الإحصائيات والمنهجية")
+        q5 = st.text_area("توصيف المستفيدين (أرقام دقيقة)", placeholder="مثال: 50 متدرب (20 مدراء أقسام، 30 موظفين ميدانيين)")
         
         c1, c2 = st.columns(2)
-        m = c1.number_input("الذكور", min_value=0)
-        f = c2.number_input("الإناث", min_value=0)
+        m = c1.number_input("عدد الذكور", min_value=0)
+        f = c2.number_input("عدد الإناث", min_value=0)
         if m+f > 0:
-            st.bar_chart(pd.DataFrame({'الفئة':['ذكور','إناث'],'العدد':[m,f]}).set_index('الفئة'), color="#D4AF37")
-        
-        q7 = st.text_area("منهجية التنفيذ (خطوات العمل)", placeholder="اشرح كيف تم تحويل الخطط إلى واقع...")
+            st.bar_chart(pd.DataFrame({'الجنس':['ذكور','إناث'],'العدد':[m,f]}).set_index('الجنس'), color="#D4AF37")
+            
+        q7 = st.text_area("منهجية التنفيذ المعتمدة", placeholder="مثال: تم استخدام نموذج SWOT وتحليل الفجوات GAP Analysis")
         
         col_p, col_n = st.columns(2)
-        if col_p.button("⬅️ العودة"): st.session_state.step = 1; st.rerun()
-        if col_n.button("التالي: تحليل النتائج ⬅️"):
+        if col_p.button("⬅️ السابق"): st.session_state.step = 1; st.rerun()
+        if col_n.button("التالي ⬅️"):
             st.session_state.update({"q5":q5,"m":m,"f":f,"q7":q7,"step":3}); st.rerun()
 
+    # المرحلة 3
     elif st.session_state.step == 3:
-        st.subheader("3️⃣ التحليل الاستراتيجي العميق")
-        q6 = st.text_area("المخرجات والنتائج المحققة", help="ما الذي تغير فعلياً على أرض الواقع؟")
-        q8 = st.text_area("التحديات والدروس المستفادة", help="كيف تعاملتم مع العقبات بذكاء؟")
+        st.subheader("3️⃣ التحليل الاستراتيجي والنتائج")
+        q6 = st.text_area("الأهداف المحققة (Outcomes)", placeholder="مثال: الخروج بخطة تشغيلية معمدة لعام 2027")
+        q8 = st.text_area("التحديات والحلول المنفذة", placeholder="مثال: ضيق الوقت، وتم حله بتمديد ساعات الورشة المسائية")
         
         col_p, col_n = st.columns(2)
-        if col_p.button("⬅️ العودة"): st.session_state.step = 2; st.rerun()
-        if col_n.button("التالي: الرؤية الختامية ⬅️"):
+        if col_p.button("⬅️ السابق"): st.session_state.step = 2; st.rerun()
+        if col_n.button("التالي ⬅️"):
             st.session_state.update({"q6":q6,"q8":q8,"step":4}); st.rerun()
 
+    # المرحلة 4
     elif st.session_state.step == 4:
-        st.subheader("4️⃣ الأثر والتوصيات")
-        q10 = st.text_area("التوصيات المستقبلية")
-        q11 = st.text_area("قصص النجاح والأثر الملموس")
+        st.subheader("4️⃣ الأثر والتوصيات الختامية")
+        q10 = st.text_area("التوصيات الاستراتيجية للمستقبل", placeholder="مثال: ضرورة الانتقال لمرحلة الأتمتة الكاملة للتقارير")
+        q11 = st.text_area("قصة أثر أو نجاح ملموسة", placeholder="مثال: إشادة المانحين بسرعة وجودة المخرجات الميدانية")
         
         col_p, col_n = st.columns(2)
-        if col_p.button("⬅️ العودة"): st.session_state.step = 3; st.rerun()
-        if col_n.button("🚀 صياغة التقرير العالمي"):
-            with st.status("جاري تحليل البيانات وصياغتها بمعايير دولية...", expanded=True) as status:
-                st.write("✅ تدقيق المؤشرات الإحصائية...")
-                time.sleep(1)
-                st.write("✅ صياغة المحتوى باللغة الاستشارية...")
-                time.sleep(1)
-                status.update(label="تم توليد التقرير بنجاح!", state="complete", expanded=False)
-            
+        if col_p.button("⬅️ السابق"): st.session_state.step = 3; st.rerun()
+        if st.button("🚀 صياغة التقرير وتصديره"):
             st.balloons()
-            final_prompt = f"المطلوب صياغة {st.session_state.rtype} بـ {st.session_state.rlang} لمشروع {st.session_state.q1}. البيانات الميدانية: {st.session_state.q5}, المنهجية: {st.session_state.q7}, النتائج: {st.session_state.q6}, التحديات: {st.session_state.q8}, التوصيات: {q10}, الأثر: {q11}."
-            
-            st.success("📝 المخرج الاستراتيجي جاهز")
-            st.code(final_prompt, language="markdown")
-            st.download_button("📥 تحميل التقرير", final_prompt, file_name="Mansour_Strategic_Report.txt")
-            if st.button("تقرير جديد 🔄"): st.session_state.step = 1; st.rerun()
+            final_report = f"تقرير {st.session_state.q1} | الجهة: {st.session_state.q2} | الإحصائيات: {st.session_state.m} ذكور و {st.session_state.f} إناث | النتائج: {st.session_state.q6} | الأثر: {q11}"
+            st.success("✅ التقرير جاهز بمعايير دولية")
+            st.code(final_report)
+            st.download_button("📥 تحميل PDF/Text", final_report, file_name="Strategic_Report.txt")
 
-if st.session_state.is_admin:
-    st.markdown(f'<a href="{EDIT_URL}" target="_blank" class="admin-anchor">⚙️ غرفة التحكم | منصور الوصابي</a>', unsafe_allow_html=True)
+    # --- الجزء الخاص بالمدير فقط (مخفي تماماً عن الآخرين) ---
+    if st.session_state.user_role == "Admin":
+        st.markdown("---")
+        with st.expander("🔐 لوحة تحكم الإدارة العليا (ظاهرة لك فقط)"):
+            st.write("أهلاً يا مستشار منصور، يمكنك تعديل النظام من هنا:")
+            st.markdown(f'<a href="{GITHUB_EDIT_LINK}" target="_blank" class="admin-only-btn">⚙️ تعديل كود المنصة على GitHub</a>', unsafe_allow_html=True)
+            if st.button("توليد كود VIP جديد"):
+                st.code(f"VIP-{random.randint(1000,9999)}")
