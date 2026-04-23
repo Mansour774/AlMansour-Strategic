@@ -1,64 +1,57 @@
 import streamlit as st
 
-# 1. إعدادات الهوية البصرية (الفخامة والاحترافية)
+# إعدادات الفخامة (خط Cairo والألوان الذهبية)
 st.set_page_config(page_title="المنصور استراتيجي", layout="centered")
 
 st.markdown("""
     <style>
-    .main { background-color: #121212; color: #D4AF37; }
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+    * { font-family: 'Cairo', sans-serif; direction: rtl; }
+    .main { background-color: #0E1117; }
+    h1, h2, h3 { color: #D4AF37 !important; text-align: center; font-weight: 700; }
+    p { color: #E0E0E0 !important; text-align: center; }
     .stTextInput>div>div>input, .stTextArea>div>div>textarea {
-        background-color: #1E1E1E; color: #FFFFFF; border: 1px solid #D4AF37; text-align: right;
+        background-color: #1A1C24 !important; color: white !important;
+        border: 1px solid #D4AF37 !important; border-radius: 10px !important;
     }
-    h1, h2, h3, p { color: #D4AF37 !important; text-align: right; }
-    .stButton>button { 
-        background-color: #D4AF37; color: black; font-weight: bold; width: 100%;
-        border-radius: 8px; border: none; height: 3em;
+    .stButton>button {
+        background: linear-gradient(90deg, #D4AF37, #B8860B) !important;
+        color: black !important; font-weight: bold !important;
+        width: 100% !important; border-radius: 12px !important; height: 3.5em !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align: center;'>🦅 منصة المنصور استراتيجي</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center;'>تحت إشراف المستشار منصور الوصابي</p>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; font-size: 60px;'>🦅</div>", unsafe_allow_html=True)
+st.markdown("<h1>مَنصة المَنصور استراتيجي</h1>", unsafe_allow_html=True)
+st.markdown("<p>بوابة المستشار منصور الوصابي للتقارير والحلول الذكية</p>", unsafe_allow_html=True)
+st.markdown("---")
 
-# نظام التحقق
-if 'auth' not in st.session_state:
-    st.session_state.auth = False
+if 'auth' not in st.session_state: st.session_state.auth = False
 
 if not st.session_state.auth:
     st.subheader("🔑 تفعيل النظام")
-    code = st.text_input("أدخل كود التفعيل الخاص بك", type="password")
+    code = st.text_input("أدخل كود VIP الخاص بك", type="password", placeholder="M-77-VIP")
     if st.button("دخول للنظام"):
-        if code in ["M-77-VIP", "STR-2026-XP", "FREE-MAN-2026"]:
+        if code in ["M-77-VIP", "STR-2026-XP"]:
             st.session_state.auth = True
             st.rerun()
-        else:
-            st.error("الكود خاطئ. تواصل مع المستشار منصور 774575749")
+        else: st.error("الكود غير صحيح")
 else:
-    st.markdown("### 📝 نموذج البيانات الاستراتيجية")
-    with st.form("main_form"):
-        p1 = st.text_input("1. اسم المشروع")
-        p2 = st.text_input("2. الجهة المنفذة")
-        p3 = st.text_input("3. عنوان النشاط")
-        p4 = st.text_input("4. النطاق الزماني والمكاني")
-        p5 = st.text_input("5. إحصائيات الحضور")
-        p6 = st.text_area("6. أهداف النشاط")
-        p7 = st.text_area("7. أهم الإنجازات")
-        p8 = st.text_area("8. التحديات والمخاطر")
-        p9 = st.text_area("9. الحلول والمعالجات")
-        p10 = st.text_area("10. التوصيات الختامية")
-        p11 = st.text_input("11. وصف الصور المرفقة")
+    with st.form("pro_form"):
+        col1, col2 = st.columns(2)
+        with col1:
+            p1 = st.text_input("اسم المشروع", placeholder="مثال: الاستجابة الطارئة للنازحين")
+            p3 = st.text_input("عنوان النشاط", placeholder="مثال: ورشة تدريب سبل المعيشة")
+        with col2:
+            p2 = st.text_input("الجهة المنفذة", placeholder="مثال: مؤسسة بناء للتنمية")
+            p4 = st.text_input("النطاق (زمان/مكان)", placeholder="مثال: صنعاء - أبريل 2026")
         
-        if st.form_submit_button("🚀 توليد التقرير النهائي"):
-            st.success("تم بنجاح! انسخ الكود أدناه وضعه في محرك الذكاء الاصطناعي:")
-            out = f"""
-            [AL-MANSOUR-STRATEGIC-V3.5]
-            {{
-              "METADATA": {{"PRJ": "{p1}", "ORG": "{p2}", "ACT": "{p3}", "LOC": "{p4}"}},
-              "STATS": {{"GND": "{p5}", "GOAL": "{p6}", "RESULT": "{p7}"}},
-              "LOGS": {{"CHLNG": "{p8}", "SOL": "{p9}"}},
-              "FINAL": {{"REC": "{p10}", "IMG": "{p11}"}}
-            }}
-            [DECODING]: Generate a high-level professional NGO report (AR/EN).
-            """
-            st.code(out)
+        st.markdown("---")
+        p7 = st.text_area("أهم الإنجازات المحققة", placeholder="1. تم تدريب 50 شاباً..\n2. تم توزيع حقائب..")
+        p10 = st.text_area("التوصيات الختامية", placeholder="توصية بزيادة الدعم الفني...")
 
+        if st.form_submit_button("🚀 توليد الصياغة الاحترافية"):
+            st.balloons()
+            st.success("تم التوليد بنجاح! انسخ النص وضعه في Gemini")
+            st.code(f"PRJ: {p1} | ACT: {p3} | RESULT: {p7}")
